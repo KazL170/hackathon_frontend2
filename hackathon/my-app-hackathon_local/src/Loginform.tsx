@@ -1,47 +1,79 @@
-import { signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import React, { useState } from 'react';
+import { signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { fireAuth } from "./firebase";
 
-export const LoginForm: React.FC = () => {
-  /**
-   * googleでログインする
-   */
-  const signInWithGoogle = (): void => {
-    // Google認証プロバイダを利用する
-    const provider = new GoogleAuthProvider();
+const LoginForm: React.FC = () => {
+  const [userName, setUserName] = useState<string | null>(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    // ログイン用のポップアップを表示
-    signInWithPopup(fireAuth, provider)
-      .then(res => {
-        const user = res.user;
-        alert("ログインユーザー: " + user.displayName);
-      })
-      .catch(err => {
-        const errorMessage = err.message;
-        alert(errorMessage);
-      });
-  };
+  const createuser = () => {
+    const auth = getAuth();
+    createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+    const user = userCredential.user;
+    alert("ログインユーザー: " + user.displayName);
+    setUserName(user.displayName)
+    })
+    .catch((error) => {
+    const errorMessage = error.message;
+    alert(errorMessage);
+  });
+  }
 
-  /**
-   * ログアウトする
-   */
-  const signOutWithGoogle = (): void => {
+  const signInWithEmailandPassword = () => {
+    const auth = getAuth();
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential: { user: any; }) => {
+      // Signed in 
+      const user = userCredential.user;
+      alert("ログインユーザー: " + user.displayName);
+      setUserName(user.displayName)
+      }).catch((err: any) => {
+        alert(err);
+  });
+  }
+
+  const signOutWithEmailAndPassword = () => {
     signOut(fireAuth).then(() => {
       alert("ログアウトしました");
     }).catch(err => {
       alert(err);
     });
-  };
+  }
+  const handleSubmit = async (e: { preventDefault: () => void; }) => {
+    e.preventDefault()
+  }
 
   return (
     <div>
-      <button onClick={signInWithGoogle}>
-        Googleでログイン
+      <button onClick={signInWithEmailandPassword}>
+        メール・パスワードでログイン
       </button>
-      <button onClick={signOutWithGoogle}>
+      <button onClick={signOutWithEmailAndPassword}>
         ログアウト
       </button>
+      <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit}>
+        <label>Email: </label>
+        <input
+          type="string"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        ></input>
+      </form>
+      <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit}>
+        <label>Password: </label>
+        <input
+          type="string"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        ></input>
+        <button type={"submit"} onClick={createuser} >サインアップ</button>
+      </form>
     </div>
+    
   );
 };
-
 export default LoginForm;
