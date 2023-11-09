@@ -68,7 +68,7 @@ const LoginForm: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         ></input>
-        <button type={"submit"} onClick={Signup} >サイン</button>
+        <button type={"submit"} onClick={Signup} >サインアップ</button>
       </form>
     </div>
     
