@@ -9,7 +9,7 @@ const LoginForm: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const createuser = () => {
+  const Signup = () => {
     const auth = getAuth();
     createUserWithEmailAndPassword(auth, email, password)
     .then((userCredential) => {
@@ -17,9 +17,8 @@ const LoginForm: React.FC = () => {
     alert("ログインユーザー: " + user.displayName);
     setUserName(user.displayName)
     })
-    .catch((error) => {
-    const errorMessage = error.message;
-    alert(errorMessage);
+    .catch((err) => {
+    alert(err);
   });
   }
 
@@ -55,7 +54,7 @@ const LoginForm: React.FC = () => {
       <button onClick={signOutWithEmailAndPassword}>
         ログアウト
       </button>
-      <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <label>Email: </label>
         <input
           type="string"
@@ -70,7 +69,7 @@ const LoginForm: React.FC = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         ></input>
-        <button type={"submit"} onClick={createuser} >サインアップ</button>
+        <button type={"submit"} onClick={Signup} >サインアップ</button>
       </form>
     </div>
     
