@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { signOut } from "firebase/auth";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, sendEmailVerification,} from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { fireAuth } from "./firebase";
 
+
 const LoginForm: React.FC = () => {
-  const [userName, setUserName] = useState<string | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -15,7 +15,7 @@ const LoginForm: React.FC = () => {
     .then((userCredential) => {
     const user = userCredential.user;
     alert("ログインユーザー: " + user.displayName);
-    setUserName(user.displayName)
+    sendEmailVerification(user)
     })
     .catch((err) => {
     alert(err);
@@ -26,10 +26,8 @@ const LoginForm: React.FC = () => {
     const auth = getAuth();
     signInWithEmailAndPassword(auth, email, password)
     .then((userCredential: { user: any; }) => {
-      // Signed in 
       const user = userCredential.user;
       alert("ログインユーザー: " + user.displayName);
-      setUserName(user.displayName)
       }).catch((err: any) => {
         alert(err);
   });
@@ -43,8 +41,9 @@ const LoginForm: React.FC = () => {
     });
   }
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
-    e.preventDefault()
+  e.preventDefault()
   }
+  
 
   return (
     <div>
@@ -62,7 +61,7 @@ const LoginForm: React.FC = () => {
           onChange={(e) => setEmail(e.target.value)}
         ></input>
       </form>
-      <form style={{ display: "flex", flexDirection: "column" }} onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit}>
         <label>Password: </label>
         <input
           type="string"
